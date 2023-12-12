@@ -124,6 +124,7 @@ const endpointSecret = "whsec_fb42ea695024289fddbd8fc316d5bbaf8bedfbdc359d5d6736
 router.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
   
   const sig = req.headers['stripe-signature'];
+  const rawBody = req.body
 
   let data;
   let eventType;
@@ -132,7 +133,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
       console.log("Webhook Verified");
     } catch (err) {
       console.log(`Webhook Error: ${err.message}`);
