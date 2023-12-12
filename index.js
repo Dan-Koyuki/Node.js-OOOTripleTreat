@@ -14,6 +14,20 @@ const app = express();
 require('dotenv').config();
 
 app.use(cors());
+app.use((req, res, next) => {
+  // Allow requests from all origins
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Define allowed methods
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  // Define allowed headers
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Continue to the next middleware
+  next();
+});
+app.options('*', (req, res) => {
+  // Respond to preflight requests
+  res.status(200).end();
+});
 app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
