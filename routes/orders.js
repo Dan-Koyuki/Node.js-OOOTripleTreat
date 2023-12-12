@@ -4,17 +4,18 @@ const moment = require("moment");
 
 const router = require("express").Router();
 
-router.get('/', isAdmin, async(req, res) => {
-  const query = req.query.new
+router.get("/", isAdmin, async (req, res) => {
+  const query = req.query.new;
   try {
-    const orders = query ? await Order.find().sort({_id: -1}).limit(4) : 
-    await Order.find().sort({_id: -1});
+    const orders = query
+      ? await Order.find().sort({ _id: -1 }).limit(4)
+      : await Order.find().sort({ _id: -1 });
 
     res.status(200).send(orders);
   } catch (error) {
     res.status(500).send(error);
   }
-})
+});
 
 router.get("/stats", isAdmin, async (req, res) => {
   const previousMonth = moment()
@@ -25,19 +26,19 @@ router.get("/stats", isAdmin, async (req, res) => {
   try {
     const orders = await Order.aggregate([
       {
-        $match: {createdAt : {$gte: new Date(previousMonth)}},
+        $match: { createdAt: { $gte: new Date(previousMonth) } },
       },
       {
         $project: {
-          month: {$month: '$createdAt'}
-        }
+          month: { $month: "$createdAt" },
+        },
       },
       {
         $group: {
           _id: "$month",
-          total: {$sum: 1}
-        }
-      }
+          total: { $sum: 1 },
+        },
+      },
     ]);
 
     res.status(200).send(orders);
@@ -55,20 +56,20 @@ router.get("/income/stats", isAdmin, async (req, res) => {
   try {
     const income = await Order.aggregate([
       {
-        $match: {createdAt : {$gte: new Date(previousMonth)}},
+        $match: { createdAt: { $gte: new Date(previousMonth) } },
       },
       {
         $project: {
-          month: {$month: '$createdAt'},
-          sales: '$total'
-        }
+          month: { $month: "$createdAt" },
+          sales: "$total",
+        },
       },
       {
         $group: {
           _id: "$month",
-          total: {$sum: '$sales'}
-        }
-      }
+          total: { $sum: "$sales" },
+        },
+      },
     ]);
 
     res.status(200).send(income);
@@ -78,27 +79,25 @@ router.get("/income/stats", isAdmin, async (req, res) => {
 });
 
 router.get("/week-sales", isAdmin, async (req, res) => {
-  const last7Days = moment()
-    .day(moment().day() - 7)
-    .format("YYYY-MM-DD HH:mm:ss");
+  const last7Days = moment().subtract(7, "days").format("YYYY-MM-DD HH:mm:ss");
 
   try {
     const income = await Order.aggregate([
       {
-        $match: {createdAt : {$gte: new Date(previousMonth)}},
+        $match: { createdAt: { $gte: new Date(previousMonth) } },
       },
       {
         $project: {
-          day: {$dayOfWeek: '$createdAt'},
-          sales: '$total'
-        }
+          day: { $dayOfWeek: "$createdAt" },
+          sales: "$total",
+        },
       },
       {
         $group: {
           _id: "$day",
-          total: {$sum: '$sales'}
-        }
-      }
+          total: { $sum: "$sales" },
+        },
+      },
     ]);
 
     res.status(200).send(income);
@@ -107,18 +106,18 @@ router.get("/week-sales", isAdmin, async (req, res) => {
   }
 });
 
-router.put('/:id', isAdmin, async(req,res) => {
+router.put("/:id", isAdmin, async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body},
+      { $set: req.body },
       { new: true }
     );
     res.status(200).send(updatedOrder);
   } catch (error) {
     res.status(500).send(error);
   }
-})
+});
 
 router.get("/findOne/:id", auth, async (req, res) => {
   try {
