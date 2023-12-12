@@ -28,7 +28,6 @@ app.options('*', (req, res) => {
   // Respond to preflight requests
   res.status(200).end();
 });
-app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
 app.use("/api/register", register);
@@ -37,6 +36,7 @@ app.use("/api/stripe", stripe);
 app.use("/api/products", products);
 app.use('/api/users', users);
 app.use('/api/orders', orders);
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 
 app.get('/', (req, res) => {
   res.send("Welcome to my API...");
