@@ -118,15 +118,6 @@ const createOrder = async(customer, data, lineItems) => {
 
 // stripe webhook
 
-const bodyParser = require('body-parser');
-
-// Parse raw JSON requests
-app.use(bodyParser.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf.toString(); // Save the raw request body
-  },
-}));
-
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 router.post('/webhook', (req, res) => {
   
