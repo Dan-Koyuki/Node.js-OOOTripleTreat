@@ -7,7 +7,7 @@ const router = express.Router();
 // CREATE PRODUCT
 
 router.post('/', isAdmin, async (req, res) => {
-  const { name, desc, price, image } = req.body;
+  const { name, desc, price, image, category, brand, warranty } = req.body;
 
   try {
     
@@ -21,7 +21,10 @@ router.post('/', isAdmin, async (req, res) => {
           name,
           desc,
           price,
-          image: uploadRes
+          image: uploadRes,
+          category,
+          brand,
+          warranty
         });
 
         const saveProduct = await product.save();

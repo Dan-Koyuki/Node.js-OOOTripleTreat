@@ -5,6 +5,9 @@ const producSchema = new mongoose.Schema({
   desc: {type: String, required: true},
   price: {type: Number, required: true},
   image: {type: Object, required: true},
+  category: { type: String, required: true },
+  brand: { type: String, required: true },
+  warranty: { type: String }
 }, {timestamps: true});
 
 const Product = mongoose.model('Product', producSchema);
