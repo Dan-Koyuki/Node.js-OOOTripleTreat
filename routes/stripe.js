@@ -132,7 +132,11 @@ router.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(
+        Buffer.from(JSON.stringify(req.body)), // Explicitly convert to Buffer
+        sig,
+        endpointSecret
+      );
       console.log("Webhook Verified");
     } catch (err) {
       console.log(`Webhook Error: ${err.message}`);
