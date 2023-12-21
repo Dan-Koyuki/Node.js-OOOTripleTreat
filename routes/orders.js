@@ -84,7 +84,7 @@ router.get("/week-sales", isAdmin, async (req, res) => {
   try {
     const income = await Order.aggregate([
       {
-        $match: { createdAt: { $gte: new Date(previousMonth) } },
+        $match: { createdAt: { $gte: new Date(last7Days) } },
       },
       {
         $project: {
